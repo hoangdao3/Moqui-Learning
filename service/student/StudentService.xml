@@ -1,0 +1,93 @@
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/service-definition-2.1.xsd">
+    <service verb="get" noun="Students" authenticate="anonymous-all">
+        <out-parameters>
+            <parameter name="studentList" type="List">
+                <parameter name="student" type="Map">
+                    <auto-parameters entity-name="student.Student"/>
+                </parameter>
+            </parameter>
+        </out-parameters>
+        <actions>
+            <entity-find entity-name="student.Student" list="studentList"/>
+        </actions>
+    </service>
+    <service verb="add" noun="Student" >
+        <in-parameters>
+            <parameter name="studentId" type="String" required="false"/>
+            <parameter name="firstName" type="String" required="true"/>
+            <parameter name="middleName" type="String" required="true"/>
+            <parameter name="surname" type="String" required="true"/>
+            <parameter name="age" type="Integer" required="true"/>
+        </in-parameters>
+        <out-parameters>
+            <parameter name="message" type="String"/>
+            <parameter name="studentId" type="String"/>
+        </out-parameters>
+        <actions>
+            <entity-make-value entity-name="student.Student" value-field="newStudent"/>
+            <set field="newStudent.studentId" from="studentId"/>
+            <set field="newStudent.firstName" from="firstName"/>
+            <set field="newStudent.middleName" from="middleName"/>
+            <set field="newStudent.surname" from="surname"/>
+            <set field="newStudent.age" from="age"/>
+
+            <entity-create value-field="newStudent"/>
+
+            <set field="studentId" from="newStudent.studentId"/>
+            <set field="message" value="Student has been created successfully."/>
+        </actions>
+    </service>
+    <service verb="find" noun="StudentByName">
+<!--    <service verb="find" noun="StudentByName" authenticate="anonymous-all">-->
+        <in-parameters>
+            <parameter name="firstName" type="String" required="true"/>
+        </in-parameters>
+        <out-parameters>
+            <parameter name="studentList" type="List">
+                <parameter name="student" type="Map">
+                    <auto-parameters entity-name="student.Student"/>
+                </parameter>
+            </parameter>
+        </out-parameters>
+        <actions>
+            <entity-find entity-name="student.Student" list="studentList">
+                <econdition field-name="firstName" operator="equals" from="firstName"/>
+            </entity-find>
+        </actions>
+    </service>
+    <service verb="find" noun="StudentsByAgeGreaterThan" authenticate="anonymous-all">
+        <in-parameters>
+            <parameter name="age" type="Integer" required="true"/>
+        </in-parameters>
+        <out-parameters>
+            <parameter name="studentList" type="List">
+                <parameter name="student" type="Map">
+                    <auto-parameters entity-name="student.Student"/>
+                </parameter>
+            </parameter>
+        </out-parameters>
+        <actions>
+            <entity-find entity-name="student.Student" list="studentList">
+                <econdition field-name="age" operator="greater" from="age"/>
+            </entity-find>
+        </actions>
+    </service>
+    <service verb="send" noun="StudentFullName" authenticate="anonymous-all">
+        <in-parameters>
+            <parameter name="studentId" type="String" required="true"/>
+        </in-parameters>
+        <out-parameters>
+            <parameter name="fullName" type="String"/>
+        </out-parameters>
+        <actions>
+            
+            <entity-find entity-name="student.Student" list="studentList">
+                <econdition field-name="studentId" operator="equals" from="studentId"/>
+            </entity-find>
+
+            <set field="fullName" value="${studentList[0].firstName} ${studentList[0].middleName} ${studentList[0].surname}"/>
+        </actions>
+    </service>
+
+</services>

@@ -1,0 +1,71 @@
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/service-definition-2.1.xsd">
+    <service verb="add" noun="StudentSubject" authenticate="anonymous-all">
+        <in-parameters>
+            <parameter name="studentId" type="String" required="true"/>
+            <parameter name="subjectId" type="String" required="true"/>
+        </in-parameters>
+        <out-parameters>
+            <parameter name="message" type="String"/>
+        </out-parameters>
+        <actions>
+            <entity-find entity-name="student.Student" list="existingStudent">
+                <econdition field-name="studentId" operator="equals" from="studentId"/>
+            </entity-find>
+
+            <if condition="existingStudent.isEmpty()">
+                <set field="message" value="Student with the given ID does not exist."/>
+            </if>
+
+            <else>
+                <entity-make-value entity-name="student.StudentSubject" value-field="newEnrollment"/>
+                <set field="newEnrollment.studentId" from="studentId"/>
+                <set field="newEnrollment.subjectId" from="subjectId"/>
+                <set field="newEnrollment.enrollmentDate" from="now"/>
+                <entity-create value-field="newEnrollment"/>
+                <set field="message" value="Student has been successfully enrolled in the subject."/>
+            </else>
+        </actions>
+    </service>
+
+    <service verb="get" noun="StudentSubjects" authenticate="anonymous-all">
+        <in-parameters>
+            <parameter name="studentId" type="String" required="true"/>
+        </in-parameters>
+        <out-parameters>
+            <parameter name="subjectList" type="List">
+                <parameter name="subject" type="Map">
+                    <auto-parameters entity-name="subject.Subject"/>
+                </parameter>
+            </parameter>
+        </out-parameters>
+        <actions>
+            <entity-find entity-name="student.StudentSubject" list="enrollments">
+                <econdition field-name="studentId" operator="equals" from="studentId"/>
+            </entity-find>
+            <entity-find entity-name="subject.Subject" list="subjectList">
+                <econdition field-name="subjectId" operator="in" from="enrollments.subjectId"/>
+            </entity-find>
+        </actions>
+    </service>
+    <service verb="get" noun="SubjectStudents" authenticate="anonymous-all">
+        <in-parameters>
+            <parameter name="subjectId" type="String" required="true"/>
+        </in-parameters>
+        <out-parameters>
+            <parameter name="studentList" type="List">
+                <parameter name="student" type="Map">
+                    <auto-parameters entity-name="student.Student"/>
+                </parameter>
+            </parameter>
+        </out-parameters>
+        <actions>
+            <entity-find entity-name="student.StudentSubject" list="enrollments">
+                <econdition field-name="subjectId" operator="equals" from="subjectId"/>
+            </entity-find>
+            <entity-find entity-name="student.Student" list="studentList">
+                <econdition field-name="studentId" operator="in" from="enrollments.studentId"/>
+            </entity-find>
+        </actions>
+    </service>
+</services>

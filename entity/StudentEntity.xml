@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/entity-definition-2.1.xsd">
+    <entity entity-name="Student" package="student">
+        <field name="studentId" type="id" is-pk="true" not-null="true"/>
+        <field name="firstName" type="text-medium" not-null="true"/>
+        <field name="middleName" type="text-medium" not-null="true"/>
+        <field name="surname" type="text-medium" not-null="true"/>
+        <field name="age" type="number-integer"/>
+        <relationship type="many" related="student.StudentSubject" fk-name="studentId"/>
+    </entity>
+</entities>

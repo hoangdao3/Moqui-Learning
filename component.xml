@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/moqui-conf-3.xsd"
+           name="student" version="2.2.0">
+        <entities>
+            <entity resource="entity/exampleExtend.xml"/>
+        </entities>
+    <!-- can run without this, though PDFs will not render: <depends-on name="moqui-fop"/> -->
+</component>

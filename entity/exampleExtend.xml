@@ -1,0 +1,8 @@
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/entity-definition-2.1.xsd">
+
+<!--    <extend-entity entity-name="Student" package="student">-->
+<!--        <field name="studentEmail" type="text-medium" not-null="true"/>-->
+<!--        <field name="studentPhone" type="text-medium" not-null="true"/>-->
+<!--    </extend-entity>-->
+</entities>

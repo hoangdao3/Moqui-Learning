@@ -1,0 +1,81 @@
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/service-definition-2.1.xsd">
+
+    <service verb="get" noun="Subjects" authenticate="anonymous-all">
+        <out-parameters>
+            <parameter name="subjectList" type="List">
+                <parameter name="subject" type="Map">
+                    <auto-parameters entity-name="subject.Subject"/>
+                </parameter>
+            </parameter>
+        </out-parameters>
+        <actions>
+            <entity-find entity-name="subject.Subject" list="subjectList"/>
+        </actions>
+    </service>
+
+    <service verb="add" noun="Subject" authenticate="anonymous-all">
+        <in-parameters>
+            <parameter name="subjectId" type="String" required="false"/>
+            <parameter name="subjectName" type="String" required="true"/>
+            <parameter name="description" type="String" required="false"/>
+        </in-parameters>
+        <out-parameters>
+            <parameter name="message" type="String"/>
+            <parameter name="subjectId" type="String"/>
+        </out-parameters>
+        <actions>
+            <entity-make-value entity-name="subject.Subject" value-field="newSubject"/>
+            <set field="newSubject.subjectId" from="subjectId"/>
+            <set field="newSubject.subjectName" from="subjectName"/>
+            <set field="newSubject.description" from="description"/>
+
+            <entity-create value-field="newSubject"/>
+
+            <set field="subjectId" from="newSubject.subjectId"/>
+            <set field="message" value="Subject has been created successfully."/>
+        </actions>
+    </service>
+
+    <service verb="find" noun="SubjectByName" authenticate="anonymous-all">
+        <in-parameters>
+            <parameter name="subjectName" type="String" required="true"/>
+        </in-parameters>
+        <out-parameters>
+            <parameter name="subjectList" type="List">
+                <parameter name="subject" type="Map">
+                    <auto-parameters entity-name="subject.Subject"/>
+                </parameter>
+            </parameter>
+        </out-parameters>
+        <actions>
+            <entity-find entity-name="subject.Subject" list="subjectList">
+                <econdition field-name="subjectName" operator="equals" from="subjectName"/>
+            </entity-find>
+        </actions>
+    </service>
+
+    <service verb="find" noun="SubjectsByStudentId" authenticate="anonymous-all">
+        <in-parameters>
+            <parameter name="studentId" type="String" required="true"/>
+        </in-parameters>
+        <out-parameters>
+            <parameter name="subjectList" type="List">
+                <parameter name="subject" type="Map">
+                    <auto-parameters entity-name="subject.Subject"/>
+                </parameter>
+            </parameter>
+        </out-parameters>
+        <actions>
+            <entity-find entity-name="student.StudentSubject" list="studentSubjectList">
+                <econdition field-name="studentId" operator="equals" from="studentId"/>
+            </entity-find>
+            <foreach list="studentSubjectList" item="studentSubject">
+                <entity-find entity-name="subject.Subject" list="subjectList">
+                    <econdition field-name="subjectId" operator="equals" from="studentSubject.subjectId"/>
+                </entity-find>
+            </foreach>
+        </actions>
+    </service>
+
+</services>

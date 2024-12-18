@@ -1,0 +1,13 @@
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/entity-definition-2.1.xsd">
+    <entity entity-name="StudentSubject" package="student">
+
+        <field name="studentId" type="id" is-pk="true" />
+        <field name="subjectId" type="id" is-pk="true" />
+        <field name="enrollmentDate" type="time" />
+
+        <relationship type="many" related="student.Student" fk-name="studentId"/>
+
+        <relationship type="many" related="subject.Subject" fk-name="studentId"/>
+    </entity>
+</entities>
